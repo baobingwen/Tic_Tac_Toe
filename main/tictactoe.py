@@ -1,11 +1,13 @@
 import pygame
 import sys
 
+# 颜色常量
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GRAY = (128, 128, 128)
 BOARD_COLOR = WHITE
 
+# 井字棋类
 class Tictactoe:
     def __init__(self, board_size = 3, tile_size = 80):
         
@@ -28,7 +30,8 @@ class Tictactoe:
 
         # 3*3的棋盘
         self.board = [['.' for _ in range(0, self.board_size + 2)] for _ in range(0, self.board_size + 2)]
-        # 边界一周（0和board_size+1）为既叉（noughts）又圈（crosses）不可行棋区
+        
+        # 设置边界一周（0和board_size+1）为既叉（noughts）又圈（crosses）不可行棋区
         for x in range(self.board_size + 2):
             self.board[x][0] = '*'
             self.board[x][self.board_size + 1] = '*'
@@ -50,13 +53,16 @@ class Tictactoe:
         for y in range(1, self.board_size + 2):
             pygame.draw.line(self.screen, BLACK, (self.tile_size, y * self.tile_size), ((self.board_size + 1) * self.tile_size, y * self.tile_size), 2)
 
-    # 前端绘制开始界面
+    # 前端绘制开始界面（尚未开发（今天写作业去了））
     def start_game(self):
         pass
 
     # 前端消息界面
     def draw_message(self, message):
+
         self.screen.fill(WHITE)
+
+        # 绘制消息
         text = pygame.font.Font(None, 74).render(message, True, BLACK)
         self.screen.blit(text, (self.display_width // 2 - text.get_width() // 2, self.display_height // 2 - text.get_height() // 2))
     
@@ -105,6 +111,8 @@ class Tictactoe:
     # 后端判断棋局状态
     def judge_state(self):
         # 胜利
+
+        # 纵向三连判断
         for x in range(1, self.board_size + 1):
             tmp_tile = self.board[x][1]
             if tmp_tile == '.':
@@ -113,9 +121,10 @@ class Tictactoe:
                 if tmp_tile != self.board[x][y]:
                     break
             else:
-                # print(tmp_tile, 'wins!')
+                print(tmp_tile, 'wins!')
                 return 'WIN',tmp_tile
-            
+        
+        # 横向三连判断
         for y in range(1, self.board_size + 1):
             tmp_tile = self.board[1][y]
             if tmp_tile == '.':
@@ -127,8 +136,9 @@ class Tictactoe:
                 # print(tmp_tile, 'wins!')
                 return 'WIN',tmp_tile
         
+        # 对角线检测
         for x in range(1):
-            # 对角线检测
+            
             tmp_tile = self.board[1][1]
             if tmp_tile == '.':
                 break
@@ -139,8 +149,9 @@ class Tictactoe:
                 # print(tmp_tile, 'wins!')
                 return 'WIN',tmp_tile
         
+        # 反对角线检测
         for x in range(1):
-            # 反对角线检测
+            
             tmp_tile = self.board[self.board_size][1]
             
             if tmp_tile == '.':
@@ -149,8 +160,8 @@ class Tictactoe:
                 if self.board[self.board_size - x + 1][x] != tmp_tile:
                     break
             else:
-                #print(1)
-                #game.draw_Win_Screen(tmp_tile)
+                # print(1)
+                # game.draw_Win_Screen(tmp_tile)
                 return 'WIN',tmp_tile
 
         
@@ -160,23 +171,31 @@ class Tictactoe:
                 # 尚未分出胜负
                 if self.board[x][y] == '.':
                     return 'gaming'
-        print(2)
+        # print(2)
         # print('draw')
         return 'draw'
                 
     
 if __name__ == '__main__':
+
+    # 井字棋实例
     game = Tictactoe(board_size=3, tile_size = 80)
+    
+    # 主程序的初始化
     pygame.init()
     pygame.display.set_caption("Tictactoe")
     game.screen = pygame.display.set_mode((game.display_width, game.display_height))
     game.font = pygame.font.Font(None, 36)
 
+    # 初始化游戏状态判定
     judge_state = 'gaming'
 
     while True:
+
+        # 读取事件
         for event in pygame.event.get():
 
+            # 退出游戏
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
@@ -187,7 +206,9 @@ if __name__ == '__main__':
                 for x in range(5):
                     print(game.board[x])
         
+        # 游戏状态判断
         if judge_state == 'gaming':
+            # 更新棋盘状态
             game.draw_board()
             game.draw_tiles()
             judge_state = game.judge_state()
