@@ -96,16 +96,6 @@ class Tictactoe:
                     else :
                         # noughts
                         pygame.draw.circle(self.screen, BLACK, (int(center_x), int(center_y)), self.tile_size // 2 - 8, 0)
-    
-    # 前端绘制棋局状态
-    def draw_state(self, state):
-        
-        # 状态信息
-        text = self.font.render(state, True, BLACK)
-        
-        # 绘制信息文字
-        self.screen.blit(text, (self.tile_size // 2, self.tile_size // 2 - text.get_height() // 2))
-
     # 后端落子
     def drop_tiles(self, pos):
         # 处理棋子位置
@@ -200,8 +190,6 @@ if __name__ == '__main__':
     # 初始化游戏状态判定
     judge_state = 'gaming'
 
-    game.draw_state('gaming')
-
     while True:
 
         # 读取事件
@@ -223,15 +211,13 @@ if __name__ == '__main__':
             # 更新棋盘状态
             game.draw_board()
             game.draw_tiles()
-            
             judge_state = game.judge_state()
-            
         elif judge_state == 'draw':
-            game.draw_state('draw')
+            game.draw_Draw_Screen()
         else:
             if judge_state[1] == 'N':
-                game.draw_state('Nought Wins')
+                game.draw_Win_Screen('Nought')
             else:
-                game.draw_state('Cross Wins')
+                game.draw_Win_Screen('Cross')
             
         pygame.display.flip()
