@@ -42,10 +42,15 @@ class Tictactoe:
         # 当前棋子颜色
         self.player = 'N'
 
+    # 前端覆盖游戏界面
+    def cover_interface(self, color):
+        self.screen.fill(color)
+    
+    
     # 前端绘制棋盘
     def draw_board(self):
 
-        self.screen.fill(BOARD_COLOR)
+        
 
         # 绘制网格线
         for x in range(1, self.board_size + 2):
@@ -104,7 +109,7 @@ class Tictactoe:
         text = self.font.render(state, True, BLACK)
         
         # 绘制信息文字
-        self.screen.blit(text, (self.tile_size // 2, self.tile_size // 2 - text.get_height() // 2))
+        self.screen.blit(text, (self.display_width // 2 - text.get_width() // 2, self.tile_size // 2 - text.get_height() // 2))
 
     # 后端落子
     def drop_tiles(self, pos):
@@ -198,9 +203,9 @@ if __name__ == '__main__':
     game.font = pygame.font.Font(None, 36)
 
     # 初始化游戏状态判定
-    judge_state = 'gaming'
+    game_state = 'gaming'
 
-    game.draw_state('gaming')
+    
 
     while True:
 
@@ -212,26 +217,34 @@ if __name__ == '__main__':
                 pygame.quit()
                 sys.exit()
 
-            # 左键点击
-            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            # 左键点击，游戏状态为游戏中
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1 and game_state == 'gaming':
                 game.drop_tiles(event.pos)
                 for x in range(5):
                     print(game.board[x])
         
+        # 更新棋盘状态
+
+        # 覆盖原有界面
+        game.cover_interface(BOARD_COLOR)
+        # 绘制棋盘
+        game.draw_board()
+        # 绘制棋子
+        game.draw_tiles()
+        
         # 游戏状态判断
-        if judge_state == 'gaming':
-            # 更新棋盘状态
-            game.draw_board()
-            game.draw_tiles()
+        if game_state == 'gaming':
+            # 绘制游戏状态
+            game.draw_state('gaming')  
+            # 检测棋局状态
+            game_state = game.judge_state()
             
-            judge_state = game.judge_state()
-            
-        elif judge_state == 'draw':
+        elif game_state == 'draw':
             game.draw_state('draw')
         else:
-            if judge_state[1] == 'N':
+            if game_state[1] == 'N':
                 game.draw_state('Nought Wins')
             else:
                 game.draw_state('Cross Wins')
-            
+
         pygame.display.flip()
